@@ -9,6 +9,10 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+
+
 
 public class home extends javax.swing.JFrame {
 
@@ -48,7 +52,7 @@ public class home extends javax.swing.JFrame {
 
         // Logo (you'll need to replace with actual logo)
         ImageIcon logoIcon = new ImageIcon(getClass().getResource("/icons/logo.png"));
-        Image logoImg = logoIcon.getImage().getScaledInstance(60, 45, Image.SCALE_SMOOTH);
+        Image logoImg = logoIcon.getImage().getScaledInstance(70, 60, Image.SCALE_SMOOTH);
         JLabel logo = new JLabel(new ImageIcon(logoImg));
         leftNav.add(logo);
 
@@ -73,9 +77,7 @@ public class home extends javax.swing.JFrame {
     }
     
     
-    
-    
-    
+        
     private JButton createContactButton() {
         JButton contactButton = new JButton("Reserve");
         contactButton.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -106,28 +108,6 @@ public class home extends javax.swing.JFrame {
     }
       
         
-        
-        
-        
-    private JPanel createProfileIcons() {
-        JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, -10, 0));
-        profilePanel.setBackground(Color.WHITE);
-
-        String[] profilePaths = {"/icons/profile1.jpg", "/icons/profile2.jpg", "/icons/profile3.jpg"};
-        for (String path : profilePaths) {
-            ImageIcon icon = new ImageIcon(getClass().getResource(path));
-            Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            JLabel profile = new JLabel(new ImageIcon(img));
-            profile.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-            profilePanel.add(profile);
-        }
-
-        return profilePanel;
-    }
-    
-    
-    
-    
     
     private JPanel createMainContent() {
         JPanel mainPanel = new JPanel();
@@ -154,43 +134,43 @@ public class home extends javax.swing.JFrame {
         headerPanel.add(Box.createVerticalStrut(10));
         headerPanel.add(taglineLabel);
 
-        
-        JPanel profileIconsPanel = createProfileIcons();
-        profileIconsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    
-   
+       
         // Stats Panel
-        JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 50, 10));
+        JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 50, 0));
         statsPanel.setBackground(Color.WHITE);
         
         addStat(statsPanel, "115k+", "Capital Raised");
         addStat(statsPanel, "70k+", "Happy Customers");
         addStat(statsPanel, "47K+", "Property Options");
+     
+        JPanel reviewsPanel = createReviewsCarousel();
+        reviewsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Property Cards Panel
         JPanel cardsPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         cardsPanel.setBackground(Color.WHITE);
-        cardsPanel.setMaximumSize(new Dimension(1300, 500)); // Control maximum size
+        cardsPanel.setMaximumSize(new Dimension(1300, 500));
         cardsPanel.setPreferredSize(new Dimension(1200, 450));
         
         // Add property cards
         cardsPanel.add(createPropertyCard(
             "Essouira",
             "Charming streets, fresh seafood, and ocean breezes await in Essaouira. Experience the magic of this historic coastal gem!",
-            5,
+            4,
             "/icons/essaouira.jpg"  // Replace with actual image path
         ));
         
         cardsPanel.add(createPropertyCard(
             "Agadir",
             "Sunny beaches, vibrant souks, and breathtaking views—Agadir has it all. Come relax and explore this coastal paradise!",
-            5,
+            4,
             "/icons/agadir.jpg" // Replace with actual image path
         ));
 
         mainPanel.add(headerPanel);
         mainPanel.add(Box.createVerticalStrut(20));
-        mainPanel.add(profileIconsPanel); // Add profile icons panel
+//        mainPanel.add(reviewsPanel);      // Add reviews panel
+        mainPanel.add(Box.createVerticalStrut(20));
         mainPanel.add(statsPanel);
         mainPanel.add(Box.createVerticalStrut(20));
         mainPanel.add(cardsPanel);
@@ -234,7 +214,8 @@ public class home extends javax.swing.JFrame {
         JPanel card = new JPanel();
         card.setLayout(new BorderLayout());
         card.setBackground(Color.WHITE);
-        card.setBorder(new RoundedBorder(20));
+        
+        card.setBorder(new RoundedBorder(20,3));
 
         // Create image panel
         JPanel imagePanel = new JPanel(new BorderLayout());
@@ -271,18 +252,22 @@ public class home extends javax.swing.JFrame {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(Color.WHITE);
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(15, -60, 15, 15));
 
         JLabel locationLabel = new JLabel(location);
         locationLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         JLabel descriptionLabel = new JLabel("<html><body style='width: 300px'>" + description + "</html>");
         descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        
+        JPanel starsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         infoPanel.add(locationLabel);
         if (stars > 0) {
-            JPanel starsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            starsPanel.setBorder(BorderFactory.createEmptyBorder(0, 100, 00, 0)); // Add 15px left padding
             starsPanel.setBackground(Color.WHITE);
+            
             for (int i = 0; i < stars; i++) {
                 JLabel star = new JLabel("★");
                 star.setForeground(Color.ORANGE);
@@ -294,6 +279,27 @@ public class home extends javax.swing.JFrame {
         infoPanel.add(descriptionLabel);
 
         card.add(infoPanel, BorderLayout.SOUTH);
+        
+        card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(new Color(245, 245, 245));
+                infoPanel.setBackground(new Color(245, 245, 245));
+                imagePanel.setBackground(new Color(245, 245, 245));
+                starsPanel.setBackground(new Color(245, 245, 245));
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(Color.WHITE);
+                infoPanel.setBackground(Color.WHITE);
+                imagePanel.setBackground(Color.WHITE);
+                starsPanel.setBackground(Color.WHITE);
+
+            }
+        });
+
         return card;
     }
 
@@ -301,9 +307,12 @@ public class home extends javax.swing.JFrame {
     // Custom rounded border class
     private static class RoundedBorder implements Border {
         private int radius;
+        private int thickness;
 
-        RoundedBorder(int radius) {
+        RoundedBorder(int radius, int thickness) {
             this.radius = radius;
+            this.thickness = thickness;
+
         }
 
         public Insets getBorderInsets(Component c) {
@@ -315,10 +324,110 @@ public class home extends javax.swing.JFrame {
         }
 
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.drawRoundRect(x, y, width-1, height-1, radius, radius);
-        }
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setStroke(new BasicStroke(thickness));
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, width-1, height-1, radius, radius);
+            g2d.dispose();        }
     }
 
+    private JPanel createReviewsCarousel() {
+        JPanel reviewsPanel = new JPanel();
+        reviewsPanel.setLayout(new BoxLayout(reviewsPanel, BoxLayout.Y_AXIS));
+        reviewsPanel.setBackground(Color.WHITE);
+        reviewsPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+
+        // Title
+        JLabel titleLabel = new JLabel("What Our Guests Say");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        reviewsPanel.add(titleLabel);
+        reviewsPanel.add(Box.createVerticalStrut(20));
+
+        // Create reviews carousel
+        JPanel carouselPanel = new JPanel(new BorderLayout());
+        carouselPanel.setBackground(Color.WHITE);
+        carouselPanel.setMaximumSize(new Dimension(400, 200));
+        carouselPanel.setBorder(new RoundedBorder(15, 1));
+
+        // Review content panel
+        JPanel reviewContent = new JPanel();
+        reviewContent.setLayout(new BoxLayout(reviewContent, BoxLayout.Y_AXIS));
+        reviewContent.setBackground(Color.WHITE);
+        reviewContent.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Create reviews data
+        Review[] reviews = {
+            new Review("Sarah Mitchell", "Amazing experience! The staff was incredibly helpful and the location was perfect.", 5),
+            new Review("John Cooper", "Beautiful property with stunning views. Will definitely come back!", 5),
+            new Review("Emma Wilson", "Great value for money. The room was spacious and clean.", 4),
+            new Review("David Brown", "Exceptional service and fantastic amenities. Highly recommended!", 5)
+        };
+
+        // Initial review display
+        JLabel[] reviewLabels = createReviewLabels(reviews[0]);
+        for (JLabel label : reviewLabels) {
+            reviewContent.add(label);
+            reviewContent.add(Box.createVerticalStrut(10));
+        }
+
+        carouselPanel.add(reviewContent, BorderLayout.CENTER);
+
+        // Create timer to change reviews
+        final int[] currentIndex = {0};
+        Timer timer = new Timer(5000, e -> {
+            currentIndex[0] = (currentIndex[0] + 1) % reviews.length;
+            reviewContent.removeAll();
+            JLabel[] newLabels = createReviewLabels(reviews[currentIndex[0]]);
+            for (JLabel label : newLabels) {
+                reviewContent.add(label);
+                reviewContent.add(Box.createVerticalStrut(10));
+            }
+            reviewContent.revalidate();
+            reviewContent.repaint();
+        });
+        timer.start();
+
+        reviewsPanel.add(carouselPanel);
+        return reviewsPanel;
+    }
+
+    private JLabel[] createReviewLabels(Review review) {
+        JLabel nameLabel = new JLabel(review.name);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Stars panel
+        JPanel starsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
+        starsPanel.setBackground(Color.WHITE);
+        for (int i = 0; i < review.stars; i++) {
+            JLabel star = new JLabel("★");
+            star.setForeground(Color.ORANGE);
+            star.setFont(new Font("Arial", Font.PLAIN, 14));
+            starsPanel.add(star);
+        }
+        starsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel commentLabel = new JLabel("<html><body style='width: 300px'>" + review.comment + "</html>");
+        commentLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        commentLabel.setForeground(new Color(100, 100, 100));
+        commentLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        return new JLabel[]{nameLabel, commentLabel};
+    }
+
+    // Review class to hold review data
+    private static class Review {
+        String name;
+        String comment;
+        int stars;
+
+        Review(String name, String comment, int stars) {
+            this.name = name;
+            this.comment = comment;
+            this.stars = stars;
+        }
+    }
 
 
     @SuppressWarnings("unchecked")
